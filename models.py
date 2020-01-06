@@ -286,19 +286,19 @@ class PatchLoss(nn.Module):
 
 
 if __name__ == '__main__':
-    input = torch.randn([1, 3, 256, 256])
-    loss = PatchLoss(nn.BCEWithLogitsLoss())
-    loss(input, True)
-
     # input = torch.randn([1, 3, 256, 256])
-    # net = ResnetGenerator(3, 3, ngf=16, n_blocks=2)
-    # out = net(input)
-    # print(out[0].shape, out[1].shape, out[2].shape)
-    #
-    # net = Discriminator(3, n_layers=5)
-    # out = net(input)
-    # print(out[0].shape, out[1].shape, out[2].shape)
-    #
+    # loss = PatchLoss(nn.BCEWithLogitsLoss())
+    # loss(input, True)
+
+    input = torch.randn([1, 3, 256, 256])
+    net = ResnetGenerator(3, 3, ngf=16, n_blocks=2)
+    out = net(input)
+    print(out[0].shape, out[1].shape, out[2].shape)
+
+    net = Discriminator(3, n_layers=5)
+    out = net(input)
+    print(out[0].shape, out[1].shape, out[2].shape)
+
     # net = Discriminator(3, n_layers=7)
     # out = net(input)
     # print(out[0].shape, out[1].shape, out[2].shape)

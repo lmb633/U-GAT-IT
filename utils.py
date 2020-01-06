@@ -5,8 +5,8 @@ from PIL import Image
 from models import device
 from torch.nn import init
 
-std = [0.5, 0.5, 0.5]
-mean = [0.5, 0.5, 0.5]
+std = torch.Tensor([0.5, 0.5, 0.5])
+mean = torch.Tensor([0.5, 0.5, 0.5])
 
 
 def is_image_file(filename):

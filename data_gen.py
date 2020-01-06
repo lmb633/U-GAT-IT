@@ -54,6 +54,8 @@ if __name__ == '__main__':
     dataset = DatasetFromFolder('data')
     # print(dataset[0])
     loader = DataLoader(dataset, batch_size=1, shuffle=True)
+    std = torch.Tensor([0.5, 0.5, 0.5])
+    mean = torch.Tensor([0.5, 0.5, 0.5])
     for data in loader:
         print(data[0].shape)
         data1 = (data[0].squeeze().permute(1, 2, 0) * std + mean) * 255

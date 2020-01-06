@@ -11,9 +11,9 @@ root = 'data/selfie2anime'
 
 if_train_d = True
 light = True
-d_train_freq = 200
+d_train_freq = 1
 clip = 0.01
-print_freq = 200
+print_freq = 2
 weight = 10
 epochs = 1000
 lr = 0.0002
@@ -111,8 +111,10 @@ def train():
             loss_G_b = (loss_gd_b + loss_gd_b_cam) * weight_gan + loss_cycle_b * weight_cycle + loss_id_b * weight_identity + cam_loss_b * weight_cam
             loss_G = loss_G_a + loss_G_b
             if i % print_freq == 0:
-                print('generator loss a ', loss_gd_a.cpu().numpy(), loss_gd_a_cam.cpu().numpy(), loss_cycle_a.cpu().numpy(), loss_id_a.cpu().numpy(), cam_loss_a.cpu().numpy())
-                print('generator loss b ', loss_gd_b.cpu().numpy(), loss_gd_b_cam.cpu().numpy(), loss_cycle_b.cpu().numpy(), loss_id_b.cpu().numpy(), cam_loss_b.cpu().numpy())
+                print('generator loss a ', loss_gd_a.detach().cpu().numpy(), loss_gd_a_cam.detach().cpu().numpy(), loss_cycle_a.detach().cpu().numpy(),
+                      loss_id_a.detach().cpu().numpy(), cam_loss_a.detach().cpu().numpy())
+                print('generator loss b ', loss_gd_b.detach().cpu().numpy(), loss_gd_b_cam.detach().cpu().numpy(), loss_cycle_b.detach().cpu().numpy(),
+                      loss_id_b.detach().cpu().numpy(), cam_loss_b.detach().cpu().numpy())
             loss_G.backward()
             optimzer_g.step()
 
