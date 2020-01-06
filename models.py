@@ -80,10 +80,10 @@ class ResnetGenerator(nn.Module):
 
     def forward(self, input):
         x = self.DownBlock(input)
-        print('downsample', x.shape)
+        # print('downsample', x.shape)
 
         gap = torch.nn.functional.adaptive_avg_pool2d(x, 1)
-        print('gap', gap.shape)
+        # print('gap', gap.shape)
         gap_logit = self.gap_fc(gap.view(x.shape[0], -1))
         gap_weight = list(self.gap_fc.parameters())[0]
         gap = x * gap_weight.unsqueeze(2).unsqueeze(3)
@@ -105,7 +105,7 @@ class ResnetGenerator(nn.Module):
         else:
             x_ = self.FC(x.view(x.shape[0], -1))
         gamma, beta = self.gamma(x_), self.beta(x_)
-        print('gamma, beta', gamma.shape, beta.shape)
+        # print('gamma, beta', gamma.shape, beta.shape)
 
         for i in range(self.n_blocks):
             x = getattr(self, 'UpBlock1_' + str(i + 1))(x, gamma, beta)

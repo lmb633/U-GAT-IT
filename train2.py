@@ -77,7 +77,7 @@ def train():
             optimzer_g.zero_grad()
 
             fake_b2b, fake_b2b_cam_logit, _ = netg_a2b(img_b)
-            fake_a2a, fake_a2a_cam_logit = netg_b2a(img_a)
+            fake_a2a, fake_a2a_cam_logit, _ = netg_b2a(img_a)
 
             fake_a2b, fake_a2b_cam_logit, _ = netg_a2b(img_a)
             fake_b2a, fake_b2a_cam_logit, _ = netg_b2a(img_b)
