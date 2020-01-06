@@ -13,23 +13,23 @@ if_train_d = True
 light = True
 d_train_freq = 1
 clip = 0.01
-print_freq = 2
-weight = 10
+print_freq = 100
 epochs = 1000
-lr = 0.0002
+lr = 0.0001
+weight_decay = 0.0001
 batch_size = 1
 test_batch_size = 1
 input_channel = 3
 output_channel = 3
-ngf = 32
-ndf = 32
+ngf = 64
+ndf = 64
 g_layer = 4
 d_layer = 6
 check = 'best_checkpoint.tar'
 weight_gan = 1
-weight_cycle = 1
-weight_identity = 1
-weight_cam = 1
+weight_cycle = 10
+weight_identity = 100
+weight_cam = 1000
 
 train_set = DatasetFromFolder(root, 'train')
 train_loader = DataLoader(train_set, batch_size, True)
@@ -55,8 +55,8 @@ criterionMSE = PatchLoss(nn.MSELoss()).to(device)
 criterionL1 = nn.L1Loss().to(device)
 criterionBCE = PatchLoss(nn.BCEWithLogitsLoss()).to(device)
 
-optimzer_g = torch.optim.SGD(itertools.chain(netg_b2a.parameters(), netg_a2b.parameters()), lr=lr)
-optimzer_d = torch.optim.SGD(itertools.chain(netd_a.parameters(), netd_b.parameters()), lr=lr)
+optimzer_g = torch.optim.Adam(itertools.chain(netg_b2a.parameters(), netg_a2b.parameters()), lr=lr, betas=(0.5, 0.999), weight_decay=weight_decay)
+optimzer_d = torch.optim.Adam(itertools.chain(netd_a.parameters(), netd_b.parameters()), lr=lr, betas=(0.5, 0.999), weight_decay=weight_decay)
 if not os.path.exists(check):
     print('init param')
     weights_init_normal(optimzer_g)
@@ -149,12 +149,12 @@ def train():
                 print('epoch {0} {1}/{2}'.format(epoch, i, train_loader.__len__()))
                 print('loss: avg_loss_d_a {1:.3f} avg_loss_d_b {2:.3f} avg_loss_g_d_a {3:.3f} avg_loss_g_d_b {4:.3f}'
                       .format(0, avg_loss_d_a.avg, avg_loss_d_b.avg, avg_loss_g_a.avg, avg_loss_g_b.avg))
-                if loss_G < min_loss_g and loss_D < min_loss_d:
-                    min_loss_g = loss_G
-                    min_loss_d = loss_D
-                    torch.save((netg_a2b, netg_b2a, netd_a, netd_b), check)
+        if loss_G < min_loss_g and loss_D < min_loss_d:
+            min_loss_g = loss_G
+            min_loss_d = loss_D
+            torch.save((netg_a2b, netg_b2a, netd_a, netd_b), check)
 
-                visualize(netg_a2b, netg_b2a, test_loader)
+        visualize(netg_a2b, netg_b2a, test_loader)
 
 
 if __name__ == '__main__':
