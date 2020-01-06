@@ -287,7 +287,7 @@ class PatchLoss(nn.Module):
 
 if __name__ == '__main__':
     input = torch.randn([1, 3, 256, 256])
-    loss = PatchLoss(nn.MSELoss())
+    loss = PatchLoss(nn.BCEWithLogitsLoss())
     loss(input, True)
 
     # input = torch.randn([1, 3, 256, 256])

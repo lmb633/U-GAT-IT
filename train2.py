@@ -52,7 +52,7 @@ else:
 
 criterionMSE = PatchLoss(nn.MSELoss()).to(device)
 criterionL1 = nn.L1Loss().to(device)
-criterionBCE = PatchLoss(nn.BCELoss()).to(device)
+criterionBCE = PatchLoss(nn.BCEWithLogitsLoss()).to(device)
 
 optimzer_g = torch.optim.SGD(itertools.chain(netg_b2a.parameters(), netg_a2b.parameters()), lr=lr)
 optimzer_d = torch.optim.SGD(itertools.chain(netd_a.parameters(), netd_b.parameters()), lr=lr)
