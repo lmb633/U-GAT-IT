@@ -9,7 +9,6 @@ std = [0.5, 0.5, 0.5]
 mean = [0.5, 0.5, 0.5]
 
 
-
 def is_image_file(filename):
     return any(filename.endswith(extension) for extension in [".png", ".jpg", ".jpeg"])
 
@@ -67,10 +66,10 @@ def visualize(modela2b, modelb2a, dataloader, num=16):
     i = 0
     for _, data in enumerate(dataloader):
         img_a, img_b = data[0].to(device), data[1].to(device)
-        fake_b = modela2b(img_a)
-        recover_a = modelb2a(fake_b)
-        fake_a = modelb2a(img_b)
-        recover_b = modela2b(fake_a)
+        fake_b, _, _ = modela2b(img_a)
+        recover_a, _, _ = modelb2a(fake_b)
+        fake_a, _, _ = modelb2a(img_b)
+        recover_b, _, _ = modela2b(fake_a)
         for j, fake_img in enumerate(fake_b):
             save_img(fake_img.cpu().detach(), 'images/a{0}{1}_out.jpg'.format(i, j))
             save_img(recover_a[i].cpu().detach(), 'images/a{0}{1}_recover.jpg'.format(i, j))
