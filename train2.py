@@ -9,7 +9,8 @@ from utils import AverageMeter, visualize, weights_init_normal, clip_weight
 
 root = 'data/selfie2anime'
 
-if_train_d = False
+if_train_d = True
+light = True
 d_train_freq = 200
 clip = 0.01
 print_freq = 200
@@ -20,10 +21,10 @@ batch_size = 1
 test_batch_size = 1
 input_channel = 3
 output_channel = 3
-ngf = 64
-ndf = 64
-g_layer = 9
-d_layer = 4
+ngf = 32
+ndf = 32
+g_layer = 4
+d_layer = 6
 check = 'best_checkpoint.tar'
 weight_gan = 1
 weight_cycle = 1
@@ -45,10 +46,10 @@ if os.path.exists(check):
     netd_b = checkpoint[3]
 else:
     print('train from init')
-    netg_a2b = ResnetGenerator(input_channel, output_channel, ngf=64, n_blocks=6).to(device)
-    netg_b2a = ResnetGenerator(input_channel, output_channel, ngf=64, n_blocks=6).to(device)
-    netd_a = Discriminator(input_channel, ndf=64, n_layers=5).to(device)
-    netd_b = Discriminator(input_channel, ndf=64, n_layers=5).to(device)
+    netg_a2b = ResnetGenerator(input_channel, output_channel, ngf=ngf, n_blocks=g_layer, light=light).to(device)
+    netg_b2a = ResnetGenerator(input_channel, output_channel, ngf=ngf, n_blocks=g_layer, light=light).to(device)
+    netd_a = Discriminator(input_channel, ndf=ndf, n_layers=d_layer).to(device)
+    netd_b = Discriminator(input_channel, ndf=ndf, n_layers=d_layer).to(device)
 
 criterionMSE = PatchLoss(nn.MSELoss()).to(device)
 criterionL1 = nn.L1Loss().to(device)
