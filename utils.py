@@ -71,13 +71,13 @@ def visualize(modela2b, modelb2a, dataloader, num=16):
         fake_a, _, _ = modelb2a(img_b)
         recover_b, _, _ = modela2b(fake_a)
         for j, fake_img in enumerate(fake_b):
-            save_img(fake_img.cpu().detach(), 'images/a{0}{1}_out.jpg'.format(i, j))
-            save_img(recover_a[i].cpu().detach(), 'images/a{0}{1}_recover.jpg'.format(i, j))
-            save_img(img_a[i].cpu().detach(), 'images/a{0}{1}_img.jpg'.format(i, j))
+            save_img(fake_img.cpu().detach(), 'images/a{0}_{1}_out.jpg'.format(i, j))
+            save_img(recover_a[j].cpu().detach(), 'images/a{0}_{1}_recover.jpg'.format(i, j))
+            save_img(img_a[j].cpu().detach(), 'images/a{0}_{1}_img.jpg'.format(i, j))
         for j, fake_img in enumerate(fake_a):
-            save_img(fake_img.cpu().detach(), 'images/b{0}{1}_out.jpg'.format(i, j))
-            save_img(recover_b.cpu().detach(), 'images/b{0}{1}_recover.jpg'.format(i, j))
-            save_img(img_b[i].cpu().detach(), 'images/b{0}{1}_img.jpg'.format(i, j))
+            save_img(fake_img.cpu().detach(), 'images/b{0}_{1}_out.jpg'.format(i, j))
+            save_img(recover_b[j].cpu().detach(), 'images/b{0}_{1}_recover.jpg'.format(i, j))
+            save_img(img_b[j].cpu().detach(), 'images/b{0}_{1}_img.jpg'.format(i, j))
         i += 1
         if i > num:
             break
