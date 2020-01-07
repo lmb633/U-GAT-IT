@@ -110,11 +110,7 @@ def train():
             loss_G_a = (loss_gd_a + loss_gd_a_cam) * weight_gan + loss_cycle_a * weight_cycle + loss_id_a * weight_identity + cam_loss_a * weight_cam
             loss_G_b = (loss_gd_b + loss_gd_b_cam) * weight_gan + loss_cycle_b * weight_cycle + loss_id_b * weight_identity + cam_loss_b * weight_cam
             loss_G = loss_G_a + loss_G_b
-            if i % print_freq == 0:
-                print('generator loss a ', loss_gd_a.detach().cpu().numpy(), loss_gd_a_cam.detach().cpu().numpy(), loss_cycle_a.detach().cpu().numpy(),
-                      loss_id_a.detach().cpu().numpy(), cam_loss_a.detach().cpu().numpy())
-                print('generator loss b ', loss_gd_b.detach().cpu().numpy(), loss_gd_b_cam.detach().cpu().numpy(), loss_cycle_b.detach().cpu().numpy(),
-                      loss_id_b.detach().cpu().numpy(), cam_loss_b.detach().cpu().numpy())
+
             loss_G.backward()
             optimzer_g.step()
 
@@ -132,10 +128,22 @@ def train():
                 pred_fake_b, pred_fake_b_cam_logit, _ = netd_b(fake_a2b.detach())
 
                 # gan loss
-                loss_d_a = criterionMSE(pred_real_a, True) + criterionMSE(pred_fake_a, False)
-                loss_d_b = criterionMSE(pred_real_b, True) + criterionMSE(pred_fake_b, False)
-                loss_d_a_cam = criterionMSE(pred_real_a_cam_logit, True) + criterionMSE(pred_fake_a_cam_logit, False)
-                loss_d_b_cam = criterionMSE(pred_real_b_cam_logit, True) + criterionMSE(pred_fake_b_cam_logit, False)
+                loss_d_a_real = criterionMSE(pred_real_a, True)
+                loss_d_a_fake = criterionMSE(pred_fake_a, False)
+                loss_d_a = loss_d_a_real + loss_d_a_fake
+
+                loss_d_b_real = criterionMSE(pred_real_b, True)
+                loss_d_b_fake = criterionMSE(pred_fake_b, False)
+                loss_d_b = loss_d_b_real + loss_d_b_fake
+                # cam loss
+                loss_d_a_cam_real = criterionMSE(pred_real_a_cam_logit, True)
+                loss_d_a_cam_fake = criterionMSE(pred_fake_a_cam_logit, False)
+                loss_d_a_cam = loss_d_a_cam_real + loss_d_a_cam_fake
+
+                loss_d_b_cam_real = criterionMSE(pred_real_b_cam_logit, True)
+                loss_d_b_cam_fake = criterionMSE(pred_fake_b_cam_logit, False)
+                loss_d_b_cam = loss_d_b_cam_real + loss_d_b_cam_fake
+
                 loss_D_a = loss_d_a + loss_d_a_cam
                 loss_D_b = loss_d_b + loss_d_b_cam
                 avg_loss_d_a.update(loss_D_a)
@@ -146,7 +154,13 @@ def train():
                     optimzer_d.step()
 
             if (i + 1) % print_freq == 0:
-                print('epoch {0} {1}/{2}'.format(epoch, i, train_loader.__len__()))
+                print('##################   epoch {0} {1}/{2}  ####################'.format(epoch, i, train_loader.__len__()))
+                print('generator loss a ', loss_gd_a.detach().cpu().numpy(), loss_gd_a_cam.detach().cpu().numpy(), loss_cycle_a.detach().cpu().numpy(),
+                      loss_id_a.detach().cpu().numpy(), cam_loss_a.detach().cpu().numpy())
+                print('generator loss b ', loss_gd_b.detach().cpu().numpy(), loss_gd_b_cam.detach().cpu().numpy(), loss_cycle_b.detach().cpu().numpy(),
+                      loss_id_b.detach().cpu().numpy(), cam_loss_b.detach().cpu().numpy())
+                print('discriminator loss a', loss_d_a_real, loss_d_a_fake, loss_d_a_cam_real, loss_d_a_cam_fake)
+                print('discriminator loss b', loss_d_b_real, loss_d_b_fake, loss_d_b_cam_real, loss_d_b_cam_fake)
                 print('loss: avg_loss_d_a {1:.3f} avg_loss_d_b {2:.3f} avg_loss_g_d_a {3:.3f} avg_loss_g_d_b {4:.3f}'
                       .format(0, avg_loss_d_a.avg, avg_loss_d_b.avg, avg_loss_g_a.avg, avg_loss_g_b.avg))
         if loss_G < min_loss_g and loss_D < min_loss_d:
