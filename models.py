@@ -80,10 +80,8 @@ class ResnetGenerator(nn.Module):
 
     def forward(self, input):
         x = self.DownBlock(input)
-        # print('downsample', x.shape)
 
         gap = torch.nn.functional.adaptive_avg_pool2d(x, 1)
-        # print('gap', gap.shape)
         gap_logit = self.gap_fc(gap.view(x.shape[0], -1))
         gap_weight = list(self.gap_fc.parameters())[0]
         gap = x * gap_weight.unsqueeze(2).unsqueeze(3)
@@ -105,7 +103,6 @@ class ResnetGenerator(nn.Module):
         else:
             x_ = self.FC(x.view(x.shape[0], -1))
         gamma, beta = self.gamma(x_), self.beta(x_)
-        # print('gamma, beta', gamma.shape, beta.shape)
 
         for i in range(self.n_blocks):
             x = getattr(self, 'UpBlock1_' + str(i + 1))(x, gamma, beta)
@@ -168,11 +165,12 @@ class adaILN(nn.Module):
     def forward(self, input, gamma, beta):
         in_mean, in_var = torch.mean(input, dim=[2, 3], keepdim=True), torch.var(input, dim=[2, 3], keepdim=True)
         out_in = (input - in_mean) / torch.sqrt(in_var + self.eps)
+
         ln_mean, ln_var = torch.mean(input, dim=[1, 2, 3], keepdim=True), torch.var(input, dim=[1, 2, 3], keepdim=True)
         out_ln = (input - ln_mean) / torch.sqrt(ln_var + self.eps)
+
         out = self.rho.expand(input.shape[0], -1, -1, -1) * out_in + (1 - self.rho.expand(input.shape[0], -1, -1, -1)) * out_ln
         out = out * gamma.unsqueeze(2).unsqueeze(3) + beta.unsqueeze(2).unsqueeze(3)
-
         return out
 
 
@@ -190,8 +188,10 @@ class ILN(nn.Module):
     def forward(self, input):
         in_mean, in_var = torch.mean(input, dim=[2, 3], keepdim=True), torch.var(input, dim=[2, 3], keepdim=True)
         out_in = (input - in_mean) / torch.sqrt(in_var + self.eps)
+
         ln_mean, ln_var = torch.mean(input, dim=[1, 2, 3], keepdim=True), torch.var(input, dim=[1, 2, 3], keepdim=True)
         out_ln = (input - ln_mean) / torch.sqrt(ln_var + self.eps)
+
         out = self.rho.expand(input.shape[0], -1, -1, -1) * out_in + (1 - self.rho.expand(input.shape[0], -1, -1, -1)) * out_ln
         out = out * self.gamma.expand(input.shape[0], -1, -1, -1) + self.beta.expand(input.shape[0], -1, -1, -1)
 
@@ -290,7 +290,7 @@ if __name__ == '__main__':
     # loss = PatchLoss(nn.BCEWithLogitsLoss())
     # loss(input, True)
 
-    input = torch.randn([1, 3, 256, 256])
+    input = torch.randn([2, 3, 256, 256])
     net = ResnetGenerator(3, 3, ngf=16, n_blocks=2)
     out = net(input)
     print(out[0].shape, out[1].shape, out[2].shape)

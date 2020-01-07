@@ -159,8 +159,8 @@ def train():
                       loss_id_a.detach().cpu().numpy(), cam_loss_a.detach().cpu().numpy())
                 print('generator loss b ', loss_gd_b.detach().cpu().numpy(), loss_gd_b_cam.detach().cpu().numpy(), loss_cycle_b.detach().cpu().numpy(),
                       loss_id_b.detach().cpu().numpy(), cam_loss_b.detach().cpu().numpy())
-                print('discriminator loss a', loss_d_a_real, loss_d_a_fake, loss_d_a_cam_real, loss_d_a_cam_fake)
-                print('discriminator loss b', loss_d_b_real, loss_d_b_fake, loss_d_b_cam_real, loss_d_b_cam_fake)
+                print('discriminator loss a', loss_d_a_real.detach().cpu().numpy(), loss_d_a_fake.detach().cpu().numpy(), loss_d_a_cam_real.detach().cpu().numpy(), loss_d_a_cam_fake.detach().cpu().numpy())
+                print('discriminator loss b', loss_d_b_real.detach().cpu().numpy(), loss_d_b_fake.detach().cpu().numpy(), loss_d_b_cam_real.detach().cpu().numpy(), loss_d_b_cam_fake.detach().cpu().numpy())
                 print('loss: avg_loss_d_a {1:.3f} avg_loss_d_b {2:.3f} avg_loss_g_d_a {3:.3f} avg_loss_g_d_b {4:.3f}'
                       .format(0, avg_loss_d_a.avg, avg_loss_d_b.avg, avg_loss_g_a.avg, avg_loss_g_b.avg))
         if loss_G < min_loss_g and loss_D < min_loss_d:
