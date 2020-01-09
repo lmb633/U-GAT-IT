@@ -11,7 +11,7 @@ root = 'data/selfie2anime'
 
 if_train_d = True
 light = True
-d_train_freq = 1
+d_train_freq = 10
 clip = 0.01
 print_freq = 100
 epochs = 1000
@@ -26,10 +26,10 @@ ndf = 64
 g_layer = 4
 d_layer = 6
 check = 'best_checkpoint.tar'
-weight_gan = 1
+weight_gan = 100
 weight_cycle = 10
-weight_identity = 100
-weight_cam = 1000
+weight_identity = 10
+weight_cam = 10
 
 train_set = DatasetFromFolder(root, 'train')
 train_loader = DataLoader(train_set, batch_size, True)
@@ -159,8 +159,10 @@ def train():
                       loss_id_a.detach().cpu().numpy(), cam_loss_a.detach().cpu().numpy())
                 print('generator loss b ', loss_gd_b.detach().cpu().numpy(), loss_gd_b_cam.detach().cpu().numpy(), loss_cycle_b.detach().cpu().numpy(),
                       loss_id_b.detach().cpu().numpy(), cam_loss_b.detach().cpu().numpy())
-                print('discriminator loss a', loss_d_a_real.detach().cpu().numpy(), loss_d_a_fake.detach().cpu().numpy(), loss_d_a_cam_real.detach().cpu().numpy(), loss_d_a_cam_fake.detach().cpu().numpy())
-                print('discriminator loss b', loss_d_b_real.detach().cpu().numpy(), loss_d_b_fake.detach().cpu().numpy(), loss_d_b_cam_real.detach().cpu().numpy(), loss_d_b_cam_fake.detach().cpu().numpy())
+                print('discriminator loss a', loss_d_a_real.detach().cpu().numpy(), loss_d_a_fake.detach().cpu().numpy(), loss_d_a_cam_real.detach().cpu().numpy(),
+                      loss_d_a_cam_fake.detach().cpu().numpy())
+                print('discriminator loss b', loss_d_b_real.detach().cpu().numpy(), loss_d_b_fake.detach().cpu().numpy(), loss_d_b_cam_real.detach().cpu().numpy(),
+                      loss_d_b_cam_fake.detach().cpu().numpy())
                 print('loss: avg_loss_d_a {1:.3f} avg_loss_d_b {2:.3f} avg_loss_g_d_a {3:.3f} avg_loss_g_d_b {4:.3f}'
                       .format(0, avg_loss_d_a.avg, avg_loss_d_b.avg, avg_loss_g_a.avg, avg_loss_g_b.avg))
         if loss_G < min_loss_g and loss_D < min_loss_d:
